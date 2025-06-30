@@ -1,21 +1,35 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>p5.js Starter Project</title>
+    <title>Unterschriften-Generator</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<main>
-	<form action="">
-		<input type="text" id="input" name="content">
-		<button id="button" name="button">Click me</button>
-	</form>
-    <div id="sketch"></div>
-    <a href="index.js">souce code</a>
-    </main>
-    <script src="lib/p5.min.js"></script>
+    <div id="intro-overlay">
+        <div id="intro-content">
+            <h1>Die perfekte Unterschrift lernen!</h1>
+            <p>Hier kannst du ganz einfach deine eigene Unterschrift auf verschiedenen Formularen üben, verbessern und optimieren. Eine professionelle und speziell trainierte KI unterstützt dich dabei.</p>
+            <button id="start-button">Los geht's!</button>
+        </div>
+    </div>
+
+    <div id="canvas-container">
+        <canvas id="backgroundCanvas"></canvas>
+        <canvas id="drawingCanvas"></canvas>
+    </div>
+
+    <div id="control-buttons">
+        <button onclick="nextBackground()" class="reload-button">↻</button>
+        <button onclick="clearDrawing()" class="clear-button">Löschen</button>
+        <button onclick="saveCanvas()" class="save-button">Prüfen</button>
+    </div>
+
+<div id="response-container">
+    <p id="response">Setze deine Unterschrift auf das Dokument</p>
+    <div id="loading-spinner" class="hidden"></div>
+</div>
 
     <script src="index.js"></script>
 </body>

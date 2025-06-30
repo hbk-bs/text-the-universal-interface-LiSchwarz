@@ -1,69 +1,182 @@
-*,
-*::before,
-*::after {
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-}
-html {
-	font-size: 110%;
-}
-
-html,
 body {
-	width: 100%;
-	height: 100%;
+    margin: 0;
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
 }
 
-body {
-	line-height: 1.5;
+#intro-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background: rgba(255, 255, 255, 1);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
 }
 
-main {
-	display: flex;
-	justify-content: flex-start;
-	align-items: center;
-	flex-direction: column;
-	height: 100%;
-	max-width: 700px;
-	margin: 0 auto;
-	padding: 1rlh;
-	gap: 1rlh;
+#intro-content {
+    text-align: center;
+    max-width: 600px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
-form {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 10px;
-	width: 100%;
+h1 {
+    font-family: "Gill Sans", sans-serif;
+    font-size: 32px;
+    margin-bottom: 0px;
 }
 
-input {
-	height: 100%;
-	flex-grow: 1;
-	padding: 8px;
-	margin: 0;
+p {
+    font-family: "Gill Sans", sans-serif;
+    font-size: 17.5px;
+    line-height: 1.2;
+    margin: 0 0 10px;
+    text-align: left;
+    max-width: 535px;
 }
 
-input {
-	appearance: none;
-	-webkit-appearance: none;
-	margin: 0;
-	border: 1px solid #000;
+#canvas-container {
+    position: relative;
+    width: 700px;
+    height: 600px;
 }
 
-button {
-	height: 100%;
-	padding: 8px;
-	border: 1px solid #777;
-	background-color: #000;
-	color: #fff;
-	cursor: pointer;
-	flex: 0 0 100px;
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: crosshair;
 }
 
-button:hover {
-	background-color: #fff;
-	color: #000;
+#control-buttons {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    z-index: 100;
+}
+
+#start-button {
+    margin-top: 0px;
+    padding: 15px 30px;
+    font-size: 18px;
+    cursor: pointer;
+    color: white;
+    background: #6e4141;
+    border: none;
+    border-radius: 5px;
+    font-family: "Gill Sans", sans-serif;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+#start-button:hover {
+    background: #965959;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+#control-buttons button {
+    position: fixed;
+    bottom: 40px;
+    background: #6e4141;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 10px 20px;
+    font-family: "Gill Sans", sans-serif;
+    transition: all 0.3s ease;
+}
+
+.reload-button {
+    left: 400px;
+    top: 80px;
+    font-size: 24px !important;
+    width: 45px;
+    height: 45px;
+    border-radius: 50% !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clear-button {
+    left: 50%;
+}
+
+.save-button {
+    position: fixed;
+    right: 400px;
+    top: 80px;
+    padding: 8px 16px;  /* Smaller padding */
+    font-size: 14px;    /* Smaller font size */
+    width: fit-content; /* Only as wide as content needs */
+    height: fit-content; /* Only as tall as content needs */
+    background: #6e4141;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-family: "Gill Sans", sans-serif;
+    transition: all 0.3s ease;
+    z-index: 200; /* Higher than response-container */
+
+}
+
+#control-buttons button:hover {
+    background: #965959;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+#response-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    padding: 20px;
+    background: #ffffff;
+    border: 2px solid #6e4141;
+    border-radius: 10px;
+    z-index: 100;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#response {
+    margin: 0;
+    font-family: "Gill Sans", sans-serif;
+    font-size: 16px;
+    line-height: 1.4;
+    color: #333;
+}
+
+#loading-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #6e4141;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 10px auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.hidden {
+    display: none;
 }
