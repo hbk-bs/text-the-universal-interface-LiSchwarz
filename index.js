@@ -4,7 +4,6 @@ const drawCanvas = document.getElementById('drawingCanvas');
 const bgCtx = bgCanvas.getContext('2d');
 const ctx = drawCanvas.getContext('2d');
 
-// Array of background images
 const backgroundImages = [
     "bilder/95DA8118-E357-432A-A419-F6D9B3DDEF64_1_201_a.jpeg",
     "bilder/2A4CACD2-09FC-4A07-A989-69452F9E99B0_1_201_a.jpeg",
@@ -20,101 +19,105 @@ let isDrawing = false;
 let lastX = 0;
 let lastY = 0;
 
-// Initialize canvases and load background
-function init() {
-    const width = 800;
-    const height = 600;
-    
+function setCanvasSize() {
+    const { width, height } = container.getBoundingClientRect();
     bgCanvas.width = width;
     bgCanvas.height = height;
     drawCanvas.width = width;
     drawCanvas.height = height;
-    
     loadBackgroundImage();
+}
+
+function init() {
+    setCanvasSize();
 }
 
 function loadBackgroundImage() {
     const img = new Image();
     img.onload = function() {
-        // Berechne das richtige Seitenverhältnis
-        const ratio = Math.min(
-            bgCanvas.width / img.width,
-            bgCanvas.height / img.height
-        );
-        
-        // Berechne neue Dimensionen
+        const ratio = Math.min(bgCanvas.width / img.width, bgCanvas.height / img.height);
         const newWidth = img.width * ratio;
         const newHeight = img.height * ratio;
-        
-        // Zentriere das Bild
         const x = (bgCanvas.width - newWidth) / 2;
         const y = (bgCanvas.height - newHeight) / 2;
         
-        // Lösche vorheriges Bild
         bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-        
-        // Zeichne neues Bild mit korrektem Seitenverhältnis
         bgCtx.drawImage(img, x, y, newWidth, newHeight);
     }
     img.src = backgroundImages[currentImageIndex];
 }
 
 function nextBackground() {
-    // Save the old index
     const oldIndex = currentImageIndex;
-    
-    // Keep generating new random index until it's different from the old one
     do {
         currentImageIndex = Math.floor(Math.random() * backgroundImages.length);
     } while (currentImageIndex === oldIndex);
     
-    // Reset response text
     document.getElementById('response').textContent = 'Setze deine Unterschrift auf das Dokument';
-    
-    // Clear drawing canvas
     ctx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
-    
-    // Load new background
     loadBackgroundImage();
 }
 
+function getEventCoordinates(e) {
+    const rect = drawCanvas.getBoundingClientRect();
+    let x, y;
+    if (e.touches) { // Touch-Event
+        x = e.touches[0].clientX - rect.left;
+        y = e.touches[0].clientY - rect.top;
+    } else { // Maus-Event
+        x = e.clientX - rect.left;
+        y = e.clientY - rect.top;
+    }
+    return [x, y];
+}
+
 function startDrawing(e) {
+    e.preventDefault();
     isDrawing = true;
-    [lastX, lastY] = [e.offsetX, e.offsetY];
+    [lastX, lastY] = getEventCoordinates(e);
 }
 
 function draw(e) {
     if (!isDrawing) return;
+    e.preventDefault();
+    
+    const [x, y] = getEventCoordinates(e);
     
     ctx.beginPath();
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 2;
     ctx.lineCap = 'round';
     ctx.moveTo(lastX, lastY);
-    ctx.lineTo(e.offsetX, e.offsetY);
+    ctx.lineTo(x, y);
     ctx.stroke();
     
-    [lastX, lastY] = [e.offsetX, e.offsetY];
+    [lastX, lastY] = [x, y];
 }
 
 function stopDrawing() {
     isDrawing = false;
 }
 
-// Event listeners
+// Event Listeners
 window.addEventListener('load', init);
+window.addEventListener('resize', setCanvasSize); // Canvas bei Größenänderung anpassen
+
+// Maus-Events
 drawCanvas.addEventListener('mousedown', startDrawing);
 drawCanvas.addEventListener('mousemove', draw);
 drawCanvas.addEventListener('mouseup', stopDrawing);
 drawCanvas.addEventListener('mouseout', stopDrawing);
 
-// Startseite ausblenden wenn Button geklickt wird
+// Touch-Events für mobile Geräte
+drawCanvas.addEventListener('touchstart', startDrawing);
+drawCanvas.addEventListener('touchmove', draw);
+drawCanvas.addEventListener('touchend', stopDrawing);
+
 document.getElementById('start-button').addEventListener('click', function() {
     document.getElementById('intro-overlay').style.display = 'none';
-    document.getElementById('control-buttons').style.display = 'block';
+    document.getElementById('control-buttons').style.display = 'flex'; // Auf 'flex' ändern
 });
 
-// API endpoint
 const apiEndpoint = 'https://lindas-openai-api-images.val.run/';
 
 window.clearDrawing = function() {
@@ -123,7 +126,6 @@ window.clearDrawing = function() {
 }
 
 window.saveCanvas = async function() {
-    // Show loading spinner and update text
     document.getElementById('loading-spinner').classList.remove('hidden');
     document.getElementById('response').textContent = 'Unterschrift wird überprüft...';
 
@@ -146,14 +148,7 @@ window.saveCanvas = async function() {
             },
             {
                 role: 'user',
-                content: [
-                    {
-                        type: 'image_url',
-                        image_url: {
-                            url: imageDataUrl,
-                        },
-                    },
-                ],
+                content: [ { type: 'image_url', image_url: { url: imageDataUrl } } ],
             },
         ],
     };
@@ -161,9 +156,7 @@ window.saveCanvas = async function() {
     try {
         const response = await fetch(apiEndpoint, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data),
         });
 
@@ -176,7 +169,6 @@ window.saveCanvas = async function() {
         console.error('Error:', error);
         document.getElementById('response').textContent = 'Ein Fehler ist aufgetreten.';
     } finally {
-        // Hide loading spinner in all cases
         document.getElementById('loading-spinner').classList.add('hidden');
     }
 };

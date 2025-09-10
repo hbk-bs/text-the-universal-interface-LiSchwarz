@@ -15,9 +15,16 @@
         </div>
     </div>
 
-    <div id="canvas-container">
-        <canvas id="backgroundCanvas"></canvas>
-        <canvas id="drawingCanvas"></canvas>
+    <!-- Neuer Wrapper für das Hauptlayout -->
+    <div id="main-content">
+        <div id="canvas-container">
+            <canvas id="backgroundCanvas"></canvas>
+            <canvas id="drawingCanvas"></canvas>
+        </div>
+        <div id="response-container">
+            <p id="response">Setze deine Unterschrift auf das Dokument.</p>
+            <div id="loading-spinner" class="hidden"></div>
+        </div>
     </div>
 
     <div id="control-buttons">
@@ -25,11 +32,6 @@
         <button onclick="clearDrawing()" class="clear-button">Löschen</button>
         <button onclick="saveCanvas()" class="save-button">Prüfen</button>
     </div>
-
-<div id="response-container">
-    <p id="response">Setze deine Unterschrift auf das Dokument</p>
-    <div id="loading-spinner" class="hidden"></div>
-</div>
 
     <script src="index.js"></script>
 </body>
